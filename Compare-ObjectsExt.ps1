@@ -38,15 +38,15 @@ function Compare-ObjectsExt {
         }
     }
     Write-Debug "ref and diff both not null"
-    $refTypeData = ($ref) | Get-TypeData
-    $diffTypeData = ($diff) | Get-TypeData
+    $refTypeData = ($ref | Get-TypeData).TypeNames
+    $diffTypeData = ($diff | Get-TypeData).TypeNames
 
     if ($null -eq $refTypeData) {
-        $refTypeData = $ref.GetType()
+        $refTypeData = $ref.GetType().Name
     }
 
     if ($null -eq $diffTypeData) {
-        $diffTypeData = $diff.GetType()
+        $diffTypeData = $diff.GetType().Name
     }
     Write-Debug "Ref type:"
     Write-Debug "$refTypeData"
@@ -67,7 +67,7 @@ function Compare-ObjectsExt {
 
         } else {
            
-            if ($refTypeData.Name -eq $diffTypeData.Name) {
+            if ($refTypeData -eq $diffTypeData) {
                 # looks promising, now we can examine objects
 
             } else {

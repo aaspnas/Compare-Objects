@@ -15,6 +15,10 @@ Describe "Compare-ObjectsExt" {
         Compare-ObjectsExt 1 1 | Should -BeNullOrEmpty
 
     }
+    It "Returns expected output for strings" {
+        Compare-ObjectsExt "foo" "foo" | Should -BeNullOrEmpty
+
+    }
     It "Notices difference between different data types" {
         Compare-ObjectsExt "foo" 1 | Should -Match '/ - Ref and Diff datatype names differ'
 
