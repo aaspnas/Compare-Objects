@@ -79,3 +79,26 @@ function Compare-ObjectsExt {
 
     
 }
+
+function Write-Diff {
+    # output for differencies
+    param (
+        $locationPath,
+
+        $diffMessage,
+
+        $breakHere
+    )
+    Write-Output "$locationPath - $diffMessage"
+
+}
+
+function isSimpleType {
+    param (
+        $typeName
+    )
+    $types = @("string", "char", "byte", "int", "int32", "long", "bool", "decimal", "single", "double")
+
+    return ($typeName -in $types)
+}
+

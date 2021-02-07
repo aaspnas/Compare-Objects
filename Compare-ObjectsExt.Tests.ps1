@@ -24,4 +24,20 @@ Describe "Compare-ObjectsExt" {
 
     }
     
+} 
+Describe "isSimpleType" {
+    It "returns true for simple types" {
+        isSimpleType ("foo").GetType().Name | Should -BeTrue
+        isSimpleType (1).GetType().Name | Should -BeTrue
+        isSimpleType (1.2).GetType().Name | Should -BeTrue
+        isSimpleType ("a",'b',"c").GetType().Name | Should -BeFalse
+    }
 }
+
+Describe "Write-Diff" {
+    It "returns text" {
+        Write-Diff '/' "is ok" | Should -Match '/ - is ok'
+
+    }
+}
+
