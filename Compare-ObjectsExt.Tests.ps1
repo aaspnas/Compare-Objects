@@ -27,13 +27,28 @@ Describe "Compare-ObjectsExt" {
 } 
 Describe "isSimpleType" {
     It "returns true for simple types" {
-        isSimpleType ("foo").GetType().Name | Should -BeTrue
-        isSimpleType (1).GetType().Name | Should -BeTrue
-        isSimpleType (1.2).GetType().Name | Should -BeTrue
-        isSimpleType ("a",'b',"c").GetType().Name | Should -BeFalse
+        isSimpleType ("foo") | Should -BeTrue
+        isSimpleType (1) | Should -BeTrue
+        isSimpleType (1.2) | Should -BeTrue
+        isSimpleType ("a",'b',"c") | Should -BeFalse
     }
 }
 
+Describe "isList" {
+    It "returns true for list objects" {
+        isList ("foo") | Should -BeFalse
+        islist ("a",'b',"c") | Should -BeTrue
+    }
+}
+
+Describe "isHash" {
+    It "returns true for list objects" {
+        isHash ("foo") | Should -BeFalse
+        isHash ("a",'b',"c") | Should -BeFalse
+        isHash ([ordered] @{foo = 1; bar = 2}) | Should -BeTrue
+        isHash (@{foo = 1; bar = 2}) | Should -BeTrue
+    }
+}
 Describe "Write-Diff" {
     It "returns text" {
         Write-Diff '/' "is ok" | Should -Match '/ - is ok'

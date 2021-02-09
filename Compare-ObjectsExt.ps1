@@ -81,7 +81,8 @@ function Compare-ObjectsExt {
 }
 
 function Write-Diff {
-    # output for differencies
+    # private function to output for differencies between objects
+    # Note that this is still subject to change
     param (
         $locationPath,
 
@@ -94,11 +95,33 @@ function Write-Diff {
 }
 
 function isSimpleType {
+    # Private function to deduce wherther object given as argument
+    # is of a type we can easily compare with a simple -eq
     param (
-        $typeName
+        $testObject
     )
     $types = @("string", "char", "byte", "int", "int32", "long", "bool", "decimal", "single", "double")
 
-    return ($typeName -in $types)
+    return ($testObject.GetType().Name -in $types)
 }
 
+function isList {
+    # Private function to deduce wherther object given as argument
+    # is a list
+    param (
+        $testObject
+    ) 
+    return $testObject.gettype().Name -match '\[\]$'
+}
+
+function isHash {
+    # Private function to deduce wherther object given as argument
+    # is a hash table
+    param (
+        $testObject
+    )
+    $types = @("Hashtable", "OrderedDictionary")
+
+    return ($testObject.GetType().Name -in $types)
+
+}
