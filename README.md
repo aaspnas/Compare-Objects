@@ -16,6 +16,9 @@ Like the built in version of Compare-Object, the script takes two mandatory argu
         .\Compare-ObjectsExt.ps1
         Compare-ObjectsExt $obj1 $obj2
 
+The script has help contents that can be viewed by:
+ 
+        Get-Help Compare-ObjectsExt
 
 ## How will objects differ
 
@@ -28,4 +31,6 @@ Objects can differ in several ways:
 - Method names can differ
 - Method signatures can differ
 
-Objects can also contain other objects.  Some methods can create new objects, but as we generally dont know what the side effects of calling methods on a object will be, we can't go calling all methods systematically.
+Objects can also contain other objects.  Some methods can create new objects, but as we generally dont know what the side effects of calling methods on a object will be, we can't go calling all methods 
+systematically or?
+

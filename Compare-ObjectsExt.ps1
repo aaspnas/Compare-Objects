@@ -1,4 +1,45 @@
+<#
+    .Synopsis
+    Compare-ObjectsExt compares two arbitary objects 
+
+    .Description
+    Compare-ObjectsExt compares two arbitary objects and outputs 
+    the difference on a detailed level. Like the built in version of 
+    Compare-Object, the script takes two mandatory arguments, $ref and 
+    $dif. In contrast to the built in version it does not rely on 
+    methods in the objects or any ToString() function to do the 
+    comparision.
+
+    The script is released under GPL-3.0 License. Please see the License 
+    file in the distribution for details.  
+
+    See the link below where to obtain the latest version, submit issues etc...
+
+    .Link
+    https://github.com/aaspnas/Compare-Objects
+
+    .Example
+    cd Compare-Objects;
+    .\Compare-ObjectsExt.ps1;
+    Compare-ObjectsExt $obj1 $obj2;
+
+    .Parameter Ref
+    Reference objet for comparison
+
+    .Parameter Diff
+    Object to compare against
+
+    .Parameter Path
+    Path is normaly left empty on invocation, but will be used when recursing
+    the objects structure to indicate the depth and object properties. If you 
+    want to obtain a copy paste ready path to the differing property you can 
+    set the value to the objects variable name like '$obj1'. 
+
+    .Parameter NoDetails
+    Supress detail output (probably not yet implemented)
+#>
 function Compare-ObjectsExt {
+    # Public function to compare two arbitary objects 
     Param(
     [Parameter(Position=0, 
     Mandatory=$true)]

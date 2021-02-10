@@ -23,7 +23,13 @@ Describe "Compare-ObjectsExt" {
         Compare-ObjectsExt "foo" 1 | Should -Match '/ - Ref and Diff datatype names differ'
 
     }
-    
+    It "Has help content" {
+        Get-Help Compare-ObjectsExt -Full | Should -Match "DESCRIPTION"
+        Get-Help Compare-ObjectsExt -Full | Should -Match "https://github.com"
+
+
+    }
+
 } 
 Describe "isSimpleType" {
     It "returns true for simple types" {
