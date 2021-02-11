@@ -34,3 +34,6 @@ Objects can differ in several ways:
 Objects can also contain other objects.  Some methods can create new objects, but as we generally dont know what the side effects of calling methods on a object will be, we can't go calling all methods 
 systematically or?
 
+## References
+
+- https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/?view=powershell-7.1
