@@ -110,6 +110,23 @@ function Compare-ObjectsExt {
            
             if ($refTypeData -eq $diffTypeData) {
                 # looks promising, now we can examine objects
+                if (isSimpleType($ref)) {
+                    if ($ref -eq $diff) {
+                        return
+                    } else {
+                        Write-Diff "$path`n"  ">> $ref `n - << $diff"  
+                    }
+
+                } elseif (isList($ref)) {
+                    if ($ref.Count -eq $diff.Count) {
+
+                    } else {
+                        write-Diff $path "Ref and Diff list lenght differ"
+                    }
+
+                } elseif (isHash($ref)) {
+                    
+                }
 
             } else {
                 return "$path - Ref and Diff datatype names differ"

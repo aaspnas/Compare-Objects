@@ -13,11 +13,18 @@ Describe "Compare-ObjectsExt" {
     }
     It "Returns expected output for integer values" {
         Compare-ObjectsExt 1 1 | Should -BeNullOrEmpty
+        Compare-ObjectsExt 1 2 | Should -Match '>> 1'
+        Compare-ObjectsExt 1 2 | Should -Match '<< 2'
 
     }
     It "Returns expected output for strings" {
         Compare-ObjectsExt "foo" "foo" | Should -BeNullOrEmpty
-
+        Compare-ObjectsExt "foo" "fo1o" | Should -Match ">> foo"
+        Compare-ObjectsExt "foo" "fo1o" | Should -Match "<< fo1o"
+    }
+    It "Returns expected output for lists" {
+        Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz") | Should -BeNullOrEmpty
+        Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match '/ - Ref and Diff list lenght differ'
     }
     It "Notices difference between different data types" {
         Compare-ObjectsExt "foo" 1 | Should -Match '/ - Ref and Diff datatype names differ'
