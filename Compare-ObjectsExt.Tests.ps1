@@ -24,8 +24,8 @@ Describe "Compare-ObjectsExt" {
     }
     It "Returns expected output for lists" {
         Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz") | Should -BeNullOrEmpty
-        Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match '/ - Ref and Diff list lenght differ'
-    }
+        Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match "Ref and Diff list lenght differ|Ref is not null, but Diff has a null value"
+    } 
     It "Notices difference between different data types" {
         Compare-ObjectsExt "foo" 1 | Should -Match '/ - Ref and Diff datatype names differ'
 

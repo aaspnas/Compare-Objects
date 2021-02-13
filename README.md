@@ -31,8 +31,12 @@ Objects can differ in several ways:
 - Method names can differ
 - Method signatures can differ
 
-Objects can also contain other objects.  Some methods can create new objects, but as we generally dont know what the side effects of calling methods on a object will be, we can't go calling all methods 
-systematically or?
+Objects can also contain other objects.  Some methods can create new objects, but as we generally dont know what the side effects of calling methods on a object will be, we can't go calling all methods systematically or? Properties with names starting "^PS" seems to be recursive objects that 
+will cause an infinite loo, so we exclude those.
+
+Simple values are directly compared with -eq. List length as well as the element at each position are compared. Note that if order in a list is different, the lists are considered to be different. An element missing in the middle of the list will cause the end of the list to mismatch. This will produce two differences to be output... Lists are recognixed from the object name having [] appended or type name being collection or ArrayList... There may be others as well in the future.
+
+Hash tables are compared by number of keys and the value for each key. 
 
 ## References
 

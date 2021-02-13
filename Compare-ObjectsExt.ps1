@@ -118,14 +118,60 @@ function Compare-ObjectsExt {
                     }
 
                 } elseif (isList($ref)) {
-                    if ($ref.Count -eq $diff.Count) {
-
+                    ## This is a quick omparision of the lists, the beginning to 
+                    ## a more thorough analysis can be found in Compare-ListThorough
+                    if ($ref.Count -ne 0) {
+                        if ($ref.Count -ne $diff.Count) {
+                            write-Diff $path "Ref and Diff list lenght differ"
+                        }
+                        $i = 0;
+                        ## $ref = ($ref | Sort-Object)
+                        ## $diff = ($diff | Sort-Object)
+                        foreach ($o in $ref) {
+                            $listPath = "$path[$i]"
+                            Compare-ObjectsExt -ref $o -diff ($diff[$i]) -path $listPath
+                            $i++
+                        }
                     } else {
-                        write-Diff $path "Ref and Diff list lenght differ"
-                    }
+                        if ($diff.Count -ne 0) {
+                            write-Diff $path "Ref is null and Diff list contain values"
 
+                        }
+                    }
                 } elseif (isHash($ref)) {
+                    $refkeys = $ref.Keys()
+                    $diffkeys = $diff.Keys()
+                    if ($refkeys.Count -ne 0) {
+
                     
+                        if ($refkeys.Count -ne $diffkeys.Count) {
+
+                            write-Diff $path "Ref and Diff hashes contain diferent number of keys"
+                        }
+                        foreach ($k in $refkeys) {
+                            $hashpath = "$path[$k]"
+                            Compare-ObjectsExt -ref ($ref[$k]) -diff ($diff[$k]) -path $hashpath
+                        }
+                    } else {
+                        if ($diffkeys.Count -ne 0) {
+                            write-Diff $path "Ref is null and Diff hashes contain values"
+
+                        }
+                    }
+                } else {
+                    ## Seems we have an actual object here...
+                    $refmembers = ($ref | get-member | Where-Object -Property MemberType -match 'Property') 
+                    # $diffmembers = ($diff | get-member | Where-Object -Property MemberType -match 'Property')
+                    foreach ($s in ($refmembers.Name)) {
+                        if ($s -match "^PS") {
+                            write-debug "Avoiding PS* properties as these can be recursive"
+                        } else {
+                            [string]$objpath = "$path" + '.' + "$s"
+                            Write-debug "Object - traversal - $objpath"
+
+                            Compare-ObjectsExt -ref ($ref.$s) -diff ($diff.$s) -path ($objpath)
+                        }
+                    } 
                 }
 
             } else {
@@ -169,7 +215,11 @@ function isList {
     param (
         $testObject
     ) 
-    return $testObject.gettype().Name -match '\[\]$'
+    if (($testObject.gettype().Name -match '\[\]$') -or ($testObject.gettype().Name -match 'ArrayList') -or ($testObject.gettype().Name -match 'collection')) {
+        return $true
+    } else {
+        return $false
+    }
 }
 
 function isHash {
@@ -181,5 +231,47 @@ function isHash {
     $types = @("Hashtable", "OrderedDictionary")
 
     return ($testObject.GetType().Name -in $types)
+
+}
+
+function Compare-ListThorough {
+    Param(
+        [Parameter(Position=0, 
+        Mandatory=$true)]
+        [AllowEmptyString()]
+        [Alias('Reference')]
+        [AllowNull()]
+        $ref,
+    
+        [Parameter(Position=1, 
+        Mandatory=$true)]
+        [AllowEmptyString()]
+        [Alias('Difference')]
+        [AllowNull()]
+        $diff,
+    
+        [Parameter(Mandatory=$false)]
+        [String[]] 
+        $path ='/',
+    
+        [Parameter(Mandatory=$false)]
+        [Switch]
+        $NoDetails
+    )
+    [System.Collections.ArrayList]$result = @()
+    foreach ($o in $ref) {
+        [System.Collections.ArrayList]$compresult = @()
+        $x = 0
+        $listPath = "$path[$i]"
+        foreach ($d in $diff) {
+            $dl = (Compare-ObjectsExt -ref $o -diff ($d) -path $listPath)
+            $compresult.Add($dl) | Out-Null
+            $x++
+        }
+        $result.Add($compresult) | Out-Null
+        # Write-Output $dr
+        $i++
+    }
+    ## Analysis done, now we need to figure out what matches
 
 }
