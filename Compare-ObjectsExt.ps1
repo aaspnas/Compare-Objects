@@ -79,16 +79,9 @@ function Compare-ObjectsExt {
         }
     }
     Write-Debug "ref and diff both not null"
-    $refTypeData = ($ref | Get-TypeData).TypeNames
-    $diffTypeData = ($diff | Get-TypeData).TypeNames
+    $refTypeData = $ref.GetType().Name
+    $diffTypeData = $diff.GetType().Name
 
-    if ($null -eq $refTypeData) {
-        $refTypeData = $ref.GetType().Name
-    }
-
-    if ($null -eq $diffTypeData) {
-        $diffTypeData = $diff.GetType().Name
-    }
     Write-Debug "Ref type:"
     Write-Debug "$refTypeData"
     Write-Debug "Diff type:"
@@ -139,8 +132,8 @@ function Compare-ObjectsExt {
                         }
                     }
                 } elseif (isHash($ref)) {
-                    $refkeys = $ref.Keys()
-                    $diffkeys = $diff.Keys()
+                    $refkeys = $ref.Keys
+                    $diffkeys = $diff.Keys
                     if ($refkeys.Count -ne 0) {
 
                     
@@ -154,7 +147,7 @@ function Compare-ObjectsExt {
                         }
                     } else {
                         if ($diffkeys.Count -ne 0) {
-                            write-Diff $path "Ref is null and Diff hashes contain values"
+                            write-Diff $path "Ref is null and Diff hash contains keys"
 
                         }
                     }
