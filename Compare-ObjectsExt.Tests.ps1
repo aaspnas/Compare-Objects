@@ -7,8 +7,8 @@ Describe "Compare-ObjectsExt" {
     It "Returns expected output for null values" {
         Compare-ObjectsExt $null $null | Should -BeNullOrEmpty
         Compare-ObjectsExt "" "" | Should -BeNullOrEmpty
-        Compare-ObjectsExt $null "foo" | Should -Match '/ - Ref is null, but Diff has a value not null'
-        Compare-ObjectsExt "foo" $null | Should -Match '/ - Ref is not null, but Diff has a null value'
+        Compare-ObjectsExt $null "foo" | Should -Match '/ - Ref is null, but Diff has a value'
+        Compare-ObjectsExt "foo" $null | Should -Match '/ - Ref has a value, but Diff is null'
 
     }
     It "Returns expected output for integer values" {
@@ -24,7 +24,7 @@ Describe "Compare-ObjectsExt" {
     }
     It "Returns expected output for lists" {
         Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz") | Should -BeNullOrEmpty
-        Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match "Ref and Diff list lenght differ|Ref is not null, but Diff has a null value"
+        Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match "Ref and Diff list lenght differ|Ref has a value, but Diff is null"
     } 
     It "Returns expected output for hashes" {
         Compare-ObjectsExt (@{ ID = 1; Name = "foo"; Description = "bar"}) (@{ ID = 1; Name = "foo"; Description = "bar"})  | Should -BeNullOrEmpty 
