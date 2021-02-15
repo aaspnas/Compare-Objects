@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<PurchaseOrders>
+  <Order OrderNumber="12234" ODate="2020-10-20">
+    <Address Type="Delivery">
+      <Name>Dib Horst</Name>
+      <Street>Food Street 13</Street>
+      <City>Milligram</City>
+      <State>NA</State>
+      <Zip>10101</Zip>
+      <Country>Mexico</Country>
+    </Address>
+    <Address Type="Billing">
+      <Name>Dib Horst</Name>
+      <Street>Food Street 12</Street>
+      <City>Milligram</City>
+      <State>NA</State>
+      <Zip>10101</Zip>
+      <Country>Mexico</Country>
+    </Address>
+    <Notes>Normal delivery</Notes>
+    <Basket>
+      <Item PartNumber="123">
+        <ProductName>Garden hose</ProductName>
+        <Quantity>1</Quantity>
+        <Price>148.95</Price>
+      </Item>
+      <Item PartNumber="321">
+        <ProductName>Oil filter</ProductName>
+        <Quantity>2</Quantity>
+        <Price>39.98</Price>
+      </Item>
+    </Basket>
+  </Order>
+  <Order OrderNumber="11235" ODate="2020-11-22">
+    <Address Type="Delivery">
+      <Name>Dib Horst</Name>
+      <Street>Food Street 12</Street>
+      <City>Milligram</City>
+      <State>NA</State>
+      <Zip>10101</Zip>
+      <Country>Mexico</Country>
+    </Address>
+    <Address Type="Billing">
+      <Name>Dib Horst</Name>
+      <Street>Food Street 12</Street>
+      <City>Milligram</City>
+      <State>NA</State>
+      <Zip>10101</Zip>
+      <Country>Mexico</Country>
+    </Address>
+    <Notes>Urgent</Notes>
+    <Basket>
+      <Item PartNumber="343">
+        <ProductName>Extension cord</ProductName>
+        <Quantity>1</Quantity>
+        <Price>45.99</Price>
+      </Item>
+    </Basket>
+  </Order>
+  <Order OrderNumber="11236" ODate="2020-11-29">
+    <Address Type="Delivery">
+      <Name>Dib Horst</Name>
+      <Street>Food Street 12</Street>
+      <City>Milligram</City>
+      <State>NA</State>
+      <Zip>10101</Zip>
+      <Country>Mexico</Country>
+    </Address>
+    <Address Type="Billing">
+      <Name>Dib Horst</Name>
+      <Street>Food Street 12</Street>
+      <City>Milligram</City>
+      <State>NA</State>
+      <Zip>10101</Zip>
+      <Country>Mexico</Country>
+    </Address>
+    <Basket>
+      <Item PartNumber="432">
+        <ProductName>Saw blade</ProductName>
+        <Quantity>1</Quantity>
+        <Price>29.99</Price>
+      </Item>
+      <Item PartNumber="554">
+        <ProductName>Hammer</ProductName>
+        <Quantity>1</Quantity>
+        <Price>14.99</Price>
+      </Item>
+    </Basket>
+  </Order>
+</PurchaseOrders>
