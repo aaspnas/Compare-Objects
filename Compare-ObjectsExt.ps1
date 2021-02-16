@@ -68,12 +68,12 @@ function Compare-ObjectsExt {
 
     if (reachedMaxRecursionDepth $path) {
         ## Going too deep...
-        $maxRecursionDepthExceeded++
         return
     }
     if ($path -eq '/') {
         $Global:diffCount = 0
-        $Global:similarCount = 0   
+        $Global:similarCount = 0
+        $Global:maxRecursionDepthExceeded = 0
     }
     if ($null -eq $ref -or '' -eq $ref) { 
         if ($null -eq $diff -or '' -eq $diff) {
@@ -322,6 +322,7 @@ function reachedMaxRecursionDepth {
     )
 
     $pathList = $locationPath.split('.')
+    Write-Debug ("path is " + $pathList.count + " long")
     if ($pathList.Count -gt $Global:maxComparisionDepth) {
         Write-Debug "Max depth reached for object at $locationPath"
         $Global:maxRecursionDepthExceeded++

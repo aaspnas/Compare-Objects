@@ -42,15 +42,34 @@ Describe "Compare-ObjectsExt" {
 
     It "Notices difference between different data types" {
         Compare-ObjectsExt "foo" 1 | Should -Match '/ - Ref and Diff datatype names differ'
+        Compare-ObjectsExt 2.533 1 | Should -Match '/ - Ref and Diff datatype names differ'
+        Compare-ObjectsExt  ([char]'a') ([String]"a") | Should -Match '/ - Ref and Diff datatype names differ'
+        Compare-ObjectsExt (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bar"}) 1  | Should -Match '/ - Ref and Diff datatype names differ'
+    }
+    It "provides correct summary information" {
+        $result1 = Compare-ObjectsExt ((get-process)[0]) ((get-process)[2]) -ProvideStats 
+        ((($result1 -match '^Diffs: ' -split ' ')[1] -replace ',' ) -eq ($result1 -match '^/').count ) | Should -BeTrue
+        $result2 = Compare-ObjectsExt (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bar"})  (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bark"}) -ProvideStats
+        ((($result2 -match '^Diffs: ' -split ' ')[3] -replace ',' ) -eq "2" ) | Should -BeTrue
+        ((($result2 -match '^Diffs: ' -split ' ')[5]) -eq "0" ) | Should -BeTrue
+        $xml1 = [xml](get-content ./testdata/test1.xml)
+        $xml2 = [xml](get-content ./testdata/test2.xml)
+        $result3 = Compare-ObjectsExt $xml1 $xml1 -ProvideStats 
+        ((($result3 -split ' ')[1] -replace ',' ) -eq "0" ) | Should -BeTrue
+        ((($result3 -split ' ')[3] -replace ',' ) -eq "391" ) | Should -BeTrue
+        ((($result3 -split ' ')[5]) -eq "16" ) | Should -BeTrue
 
     }
 
-
-    It "Has help content" {
+    It "All functions has help content" {
         Get-Help Compare-ObjectsExt -Full | Should -Match "DESCRIPTION"
         Get-Help Compare-ObjectsExt -Full | Should -Match "https://github.com"
-
-
+        Get-Help write-diff -Full | Should -Match "DESCRIPTION"
+        Get-Help isSimpleType  -Full | Should -Match "DESCRIPTION"
+        Get-Help isList -Full | Should -Match "DESCRIPTION"
+        Get-Help isHash -Full | Should -Match "DESCRIPTION"
+        Get-Help reachedMaxRecursionDepth -Full | Should -Match "DESCRIPTION"
+        Get-Help Compare-ListThorough -Full | Should -Match "DESCRIPTION"
     }
 
 } 
@@ -84,4 +103,13 @@ Describe "Write-Diff" {
 
     }
 }
+Describe "reachedMaxRecursionDepth" {
+    It "returns true for long paths and 4 or more elements with same name" {
+        reachedMaxRecursionDepth "/.a.b.c.d.e" | Should -BeFalse
+        reachedMaxRecursionDepth "/.a.b.c.d.e.e.e" | Should -BeFalse
+        reachedMaxRecursionDepth "/.a.b.c.d.e.e.e.e" | Should -BeTrue
+        reachedMaxRecursionDepth "/.a.a.a.b.b.b.c.c.c.d.d.d.e.e.e.f.f.f.g.g.g.h.h.h.i.i.i.j.j" | Should -BeFalse
+        reachedMaxRecursionDepth "/.a.a.a.b.b.b.c.c.c.d.d.d.e.e.e.f.f.f.g.g.g.h.h.h.i.i.i.j.j.j" | Should -BeTrue
 
+    }
+}
