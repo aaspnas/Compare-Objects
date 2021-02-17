@@ -23,6 +23,8 @@
     .\Compare-ObjectsExt.ps1;
     Compare-ObjectsExt $obj1 $obj2;
 
+    See the README.md file and the Test file for more examples.
+
     .Parameter Ref
     Reference objet for comparison
 
@@ -30,14 +32,18 @@
     Object to compare against
 
     .Parameter Path
-    Path should left empty on invocation or set to '/', but will be used when recursing
-    the objects structure to indicate the depth and object properties. If you 
-    want to obtain a copy paste ready path to the differing property you can 
+    Path should left empty on invocation or set to '/', but will be used when 
+    recursing the objects structure to indicate the depth and object properties. 
+    If you want to obtain a copy paste ready path to the differing property you can 
     set the value to the objects variable name like '$obj1', but this will cause 
     ProvideStats flag to fail...
 
     .Parameter ProvideStats
-    Provide numeric detail output of matches and differences.
+    Provide numeric detail output of matches in addition to only the differences. 
+    The values provide the number of differences, the number of matches and the number 
+    of times the traversal of the object tree encountered a situation interpreted as 
+    endless recursion.
+
 
     .Notes
     AUTHOR:  Anders Aspnäs - https://github.com/aaspnas/Compare-Objects

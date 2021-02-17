@@ -22,7 +22,8 @@ unless you selet to redirect output. As such the author currently see the risks 
 
 ## Supported Versions
 
-Only latest version is being updated. Clone and install new version as needed
+Only latest version is being updated. Clone and install new version as needed.
+Ensure also that the latest version of PowerShell is installed.
 
 ## Reporting a Vulnerability
 

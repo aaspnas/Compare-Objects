@@ -8,14 +8,24 @@ The built in Compare-Object function does not always provide useful output,
 for example when comparing custom PSObjects, XML stuctures or JSON imported
 data. Compare-ObjectsExt aims to address these shortcommings.
 
-This project consists of a PowerShell script and a Pester test script.
+This project consists of a PowerShell script and a Pester test script, a set of 
+test files with xml and json content, a README.md file, the LICENSE file and a 
+SECURITY.md file.
+
+The prerequesits for using this script is that PowerShell core (Works on windows, 
+mac and linux (?)) is installed. The script should not require anything else. For
+running the associated tests you will also need to install the Pester PowerShell 
+module, but this is off course entirely optional. See the testing section below 
+for more information. 
 
 Like the built in version of Compare-Object, the script takes two mandatory 
-arguments, $ref and $dif. In contrast to the built in version it does not rely 
+arguments, $ref and $diff. In contrast to the built in version it does not rely 
 on equals methods in the objects or any ToString() function to do the comparision.
 In stead we examine recursively every node in the object, Property by property, 
 Hash key value to hash key value, list element to list element against each others. 
 
+For an overview of the security of the script and an analysis of the risks, see 
+SECURITY.md.
 ## Usage: 
 
 ```
@@ -55,21 +65,23 @@ The script has help contents that can be viewed by:
 
 Objects can differ in several ways:
 - Value can be different, one value can even be null...
-- Type can be different, and type may not allways self evident
+- Type of the value can be different
 - Lists of objects can differ in several ways, containign different number 
   of elements, being null, elements being of different type, elements having 
-  different value, elements being in different order
+  different value, elements being in different order.
 - Hash content can differ by one being null, different type, different number 
   of keys, different values. 
 - Properites, ScriptProperties, NoteProperties or PropertySets can differ in an
-  object
+  object, and contain lists, hashes or other objects
 - Method names of an object can differ (not considered)
 - Method signatures of an object can differ (not considered)
 
-Objects can also contain other objects.  Some methods can create new objects, 
-but as we generally dont know what the side effects of calling methods on an 
-object will be, we can't go calling all methods systematically or? Feel free 
-to try to change my mind, but currently the script ignores any methods.
+Objects typically contain other objects in their properties. Objects also contain
+methods. Some methods can create new objects, but as we generally dont know what 
+the side effects of calling methods on an object will be, we can't go calling all 
+methods systematically or? Feel free to try to change my mind, but currently the 
+script ignores any methods when doing the comparision. Properties are recursively 
+traversed. 
 
 Properties can hold recursive objects that may cause an infinite loops, so we 
 exclude those. It is difficult to know when an object contains a property pointing 
@@ -91,6 +103,16 @@ be subject to change in the future...
 Hash tables are compared by number of keys and the value for each key. The order of 
 elements in a Hash should not affect the result.
 
+## Interpreting results
+
+The output for each difference found is outputted by writing the path of the node
+differing and an explanation of the difference. If simple values differ the $ref 
+value is presented with the '>>' prefix on a new line and the diff value prefixed 
+with '<<'. The differences found are outputted as a list. If the -ProvideStats flag 
+is used, an additional last element will be added to the list with statistics of 
+Number of matches, number of differences and the number of times endless recursion 
+was detected.
+  
 ## Testing
 
 The functionality is tested by the Pester script in this distribution. For more 
@@ -118,7 +140,8 @@ If you wish to run the tests you can do so by executing:
 All tests should pass, if not feel free to open a ticket.
 
 Testing has not been done on any old versions of PowerShell, so updating to the 
-latest version would be recommended.
+latest version would be recommended. The script is tested on an uptodate version 
+of Windows, Mac and a fresh Ubuntu Linux system.
 
 ## References
 
