@@ -1,0 +1,23 @@
+{
+  "ID": 1,
+  "Content": [
+    "One",
+    "Two",
+    "Three"
+  ],
+  "Link": "http://github.com",
+  "Name": "Meeting 1",
+  "Description": "First scheduled time",
+  "Participants": [
+    "Me",
+    "You",
+    "Them"
+  ],
+  "Schedule": {
+    "EndTime": "14:20:11",
+    "TimeZone": "UT",
+    "StartDate": "2021-02-17",
+    "StartTime": "10:15:33",
+    "EndDate": "2021-02-17"
+  }
+}
