@@ -28,34 +28,46 @@ For an overview of the security of the script and an analysis of the risks, see
 SECURITY.md.
 ## Usage: 
 
+Installation: 
+
 ```
         git clone https://github.com/aaspnas/Compare-Objects.git
         cd Compare-Objects
-        .\Compare-ObjectsExt.ps1
-        Compare-ObjectsExt $obj1 $obj2
+        . .\Compare-ObjectsExt.ps1
+```
+Or download the zip & extract somewhere... Note that the script needs to be 
+reloaded everytime you open the shell with ". .\Compare-ObjectsExt.ps1".
+
+After installation you can use the new fuction like this:
+
+```
+       Compare-ObjectsExt $obj1 $obj2
 ```
 
-or if you perfer
+
+or if you perfer to directly execute the comprision:
 
 ```
         .\Compare-ObjectsExt.ps1 $obj1 $obj2
 
 ```
+but then the additional flags will not work...
 
 Compare-ObjectsExt can be used to compare xml documents:
 
 ```
-        .\Compare-ObjectsExt.ps1
+        . .\Compare-ObjectsExt.ps1
         Compare-ObjectsExt ([xml](get-content ./testdata/test1.xml)) ([xml](get-content ./testdata/test1.xml)) 
 ```
 
 Compare-ObjectsExt can be used to compare json documents:
 
 ```
-Compare-ObjectsExt (ConvertFrom-Json (gc -raw ./testdata/test3.json)) (ConvertFrom-Json (gc -raw ./testdata/test3.json))   
+        . .\Compare-ObjectsExt.ps1
+        Compare-ObjectsExt (ConvertFrom-Json (gc -raw ./testdata/test3.json)) (ConvertFrom-Json (gc -raw ./testdata/test3.json))   
 ```
 
-The script has help contents that can be viewed by:
+The script has help contents that can be viewed once loaded by:
 
 ``` 
         Get-Help Compare-ObjectsExt
