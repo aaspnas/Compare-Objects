@@ -27,13 +27,16 @@ Describe "Compare-ObjectsExt" {
     Context "Comparision of lists and hashes" {
         It "Returns expected output for lists" {
             Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz") | Should -BeNullOrEmpty
-            Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match "Ref and Diff list lenght differ|Ref has a value, but Diff is null"
+            Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match "Lenght of list differ|Ref has a value, but Diff is null"
+            Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz", "fed" ) | Should -Match "Lenght of list differ|Ref is null, but Diff has a value"
+  
         }
 
         It "Returns expected output for hashes" {
             Compare-ObjectsExt (@{ ID = 1; Name = "foo"; Description = "bar"}) (@{ ID = 1; Name = "foo"; Description = "bar"})  | Should -BeNullOrEmpty 
             Compare-ObjectsExt (@{ ID = 1; Name = "foo"; Description = "baz"}) (@{ ID = 1; Name = "foo"; Description = "bar"})  | Should -Match ">> baz" 
             Compare-ObjectsExt (@{ ID = 1; Name = "foo"; Description = "baz"}) (@{ ID = 1; Name = "foo"; Description = "bar"})  | Should -Match "<< bar" 
+            Compare-ObjectsExt (@{ ID = 1; Name = "foo"; Description = "baz"}) (@{ Name = "foo"; Description = "baz"; ID = 1})  | Should -BeNullOrEmpty
 
         }
     }

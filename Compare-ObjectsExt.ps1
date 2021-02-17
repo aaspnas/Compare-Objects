@@ -38,6 +38,12 @@
 
     .Parameter ProvideStats
     Provide numeric detail output of matches and differences.
+
+    .Notes
+    AUTHOR:  Anders Aspnäs - https://github.com/aaspnas/Compare-Objects
+    VERSION: 1.0.0 - See github for commit history
+    License: GPL-3 - See license file in the distribution, or github
+
 #>
 function Compare-ObjectsExt {
     # Public function to compare two arbitary objects 
@@ -71,49 +77,48 @@ function Compare-ObjectsExt {
         return
     }
     if ($path -eq '/') {
+        ## Set start values for counters
         $Global:diffCount = 0
         $Global:similarCount = 0
         $Global:maxRecursionDepthExceeded = 0
     }
     if ($null -eq $ref -or '' -eq $ref) { 
+        ## Handle null values
         if ($null -eq $diff -or '' -eq $diff) {
             $Global:similarCount++
             return 
         } else {
-            $Global:diffCount++
-            return "$path - Ref is null, but Diff has a value"
+            Write-Diff $path "Ref is null, but Diff has a value"
+            return 
         }
     } else {
         if ($null -eq $diff -or '' -eq $diff) {
-            $Global:diffCount++
-            return "$path - Ref has a value, but Diff is null"
+            Write-Diff $path "Ref has a value, but Diff is null"
+            return
 
-        } else {
-        
-        }
+        } 
     }
-    Write-Debug "ref and diff both not null"
+    Write-Debug "Ref and diff both not null"
     $refTypeData = $ref.GetType().Name
     $diffTypeData = $diff.GetType().Name
 
     Write-Debug "Ref type: $refTypeData, Diff type: $diffTypeData"
 
     if ($null -eq $refTypeData) {
-        if ($null -eq $refTypeData) {
+        if ($null -eq $diffTypeData) {
             # Datatype match $null, impossible situation
-            Write-Debug "Ref data type null"
+            Write-Debug "Ref and Diff data type null"
 
         } else {
             # Datatype match $null, impossible situation
-            $Global:diffCount++
-            return "$path - Ref: Ref data type is null, but Diff data type has a value"
+            Write-Diff $path "Ref: Ref data type is null, but Diff data type has a value"
+            return
         }
     } else {
         if ($null -eq $refTypeData) {
             # Datatype match $null, impossible situation
-            $Global:diffCount++
-            return "$path - Ref: Diff data type is null, but Ref data type has a value"
-
+            Write-Diff $path "Ref: Diff data type is null, but Ref data type has a value"
+            return
         } else {
            
             if ($refTypeData -eq $diffTypeData) {
@@ -123,18 +128,23 @@ function Compare-ObjectsExt {
                         $Global:similarCount++
                         return
                     } else {
-                        $Global:diffCount++
                         Write-Diff "$path`n"  ">> $ref `n - << $diff"  
                     }
 
                 } elseif (isList($ref)) {
-                    ## This is a quick omparision of the lists, the beginning to 
-                    ## a more thorough analysis can be found in Compare-ListThorough
+                    ## This is a quick comparision of the lists, the beginning to 
+                    ## a more thorough analysis can be found as work in progress 
+                    ## in Compare-ListThorough
+                    $additionaldiffs = @()
                     if ($ref.Count -ne 0) {
                         if ($ref.Count -ne $diff.Count) {
-                            $Global:diffCount++
-                            write-Diff $path "Ref and Diff list lenght differ"
+                            write-Diff $path ("Lenght of list differ: Ref: " + $ref.count + ",  Diff: " + $diff.count)   
+                            if ($diff.Count -gt $ref.Count) {
+                                $additionaldiffs = ($diff | Where-Object { $_ -notin $ref })
+ 
+                            }
                         }
+                        
                         $i = 0;
                         ## $ref = ($ref | Sort-Object)
                         ## $diff = ($diff | Sort-Object)
@@ -142,10 +152,15 @@ function Compare-ObjectsExt {
                             $listPath = "$path[$i]"
                             Compare-ObjectsExt -ref $o -diff ($diff[$i]) -path $listPath
                             $i++
+                        } 
+                        foreach ($o in $additionaldiffs) {
+                            $listPath = "$path[$i]"
+                            Compare-ObjectsExt -ref ($ref[$i]) -diff $o -path $listPath
+                            $i++
                         }
+
                     } else {
                         if ($diff.Count -ne 0) {
-                            $Global:diffCount++
                             write-Diff $path "Ref is null and Diff list contain values"
 
                         }
@@ -153,18 +168,24 @@ function Compare-ObjectsExt {
                 } elseif (isHash($ref)) {
                     $refkeys = $ref.Keys
                     $diffkeys = $diff.Keys
+                    $additionalkeys = @()
                     if ($refkeys.Count -ne 0) {
                         if ($refkeys.Count -ne $diffkeys.Count) {
-                            $Global:diffCount++
+                            if ($diffkeys.Count -gt $refkeys.Count) {
+                                $additionalkeys = ($diffkeys | Where-Object { $_ -notin $refkeys })
+                            }
                             write-Diff $path "Ref and Diff hashes contain diferent number of keys"
                         }
                         foreach ($k in $refkeys) {
                             $hashpath = "$path[$k]"
                             Compare-ObjectsExt -ref ($ref[$k]) -diff ($diff[$k]) -path $hashpath
                         }
+                        foreach ($k in $additionalkeys) {
+                            $hashpath = "$path[$k]"
+                            Compare-ObjectsExt -ref ($ref[$k]) -diff ($diff[$k]) -path $hashpath
+                        }
                     } else {
                         if ($diffkeys.Count -ne 0) {
-                            $Global:diffCount++
                             write-Diff $path "Ref is null and Diff hash contains keys"
                         }
                     }
@@ -183,12 +204,10 @@ function Compare-ObjectsExt {
 
                         Compare-ObjectsExt -ref ($ref.$s) -diff ($diff.$s) -path ($objpath)
                     } 
-                    #Remove-Variable -Name 'allmembers'
                 }
 
             } else {
-                $Global:diffCount++
-                return "$path - Ref and Diff datatype names differ"
+                Write-Diff $path "Ref and Diff datatype names differ"
             }
 
         }
@@ -225,6 +244,7 @@ function Write-Diff {
 
         $diffMessage
     )
+    $Global:diffCount++
     Write-Output "$locationPath - $diffMessage"
 
 }
