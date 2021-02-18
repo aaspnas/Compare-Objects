@@ -100,11 +100,11 @@ Describe -Tag 'Slow' "Handles bigger objcets read from files" {
             $jsonobj2 = ConvertFrom-Json (get-content -raw ./testdata/test4.json)
             $result5 = Compare-ObjectsExt $jsonobj1 $jsonobj1 -ProvideStats 
             ((($result5 -split ' ')[1] -replace ',' ) -eq "0" ) | Should -BeTrue
-            ((($result5 -split ' ')[3] -replace ',' ) -eq "14" ) | Should -BeTrue
+            ((($result5 -split ' ')[3] -replace ',' ) -eq "15" ) | Should -BeTrue
             ((($result5 -split ' ')[5]) -eq "0" ) | Should -BeTrue
             $result6 = Compare-ObjectsExt $jsonobj1 $jsonobj2 -ProvideStats 
             ((($result6 -match '^Diffs: ' -split ' ')[1] -replace ',' ) -eq "5" ) | Should -BeTrue
-            ((($result6 -match '^Diffs: ' -split ' ')[3] -replace ',' ) -eq "9" ) | Should -BeTrue
+            ((($result6 -match '^Diffs: ' -split ' ')[3] -replace ',' ) -eq "10" ) | Should -BeTrue
             ((($result6 -match '^Diffs: ' -split ' ')[5]) -eq "0" ) | Should -BeTrue
         }
     }

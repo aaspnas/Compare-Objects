@@ -47,7 +47,7 @@
 
     .Notes
     AUTHOR:  Anders Aspnäs - https://github.com/aaspnas/Compare-Objects
-    VERSION: 1.0.0 - See github for commit history
+    VERSION: 1.0.1 - See github for commit history
     License: GPL-3 - See license file in the distribution, or github
 
 #>
@@ -92,6 +92,7 @@ function Compare-ObjectsExt {
         ## Handle null values
         if ($null -eq $diff -or '' -eq $diff) {
             $Global:similarCount++
+            Write-debug ("Similar at $path - " + $global:similarCount)
             return 
         } else {
             Write-Diff $path "Ref is null, but Diff has a value"
@@ -132,6 +133,7 @@ function Compare-ObjectsExt {
                 if (isSimpleType($ref)) {
                     if ($ref -eq $diff) {
                         $Global:similarCount++
+                        Write-debug ("Similar at $path - " + $global:similarCount)
                         return
                     } else {
                         Write-Diff "$path`n"  ">> $ref `n - << $diff"  
@@ -197,8 +199,8 @@ function Compare-ObjectsExt {
                     }
                 } else {
                     ## Seems we have an actual object here...
-                    $refmembers = ($ref | get-member | Where-Object -Property MemberType -match 'Property') 
-                    $diffmembers = ($diff | get-member | Where-Object -Property MemberType -match 'Property' | Where-Object { $_.Name -notin $refmembers.Name })
+                    $refmembers = ($ref | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'}) 
+                    $diffmembers = ($diff | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'} | Where-Object { $_.Name -notin $refmembers.Name })
                     if (($null -ne $diffmembers) -and ($diffmembers.Count -gt 0)) { 
                         $allmembers = $refmembers + $diffmembers
                     } else {
@@ -261,7 +263,7 @@ function isSimpleType {
     param (
         $testObject
     )
-    $types = @("string", "char", "byte", "int", "int32", "long", "bool", "decimal", "single", "double")
+    $types = @("string", "char", "byte", "int", "int32", "int64", "long", "bool", "decimal", "single", "double")
 
     return ($testObject.GetType().Name -in $types)
 }

@@ -153,7 +153,8 @@ All tests should pass, if not feel free to open a ticket.
 
 Testing has not been done on any old versions of PowerShell, so updating to the 
 latest version would be recommended. The script is tested on an uptodate version 
-of Windows, Mac and a fresh Ubuntu Linux system.
+of Windows, Mac and a fresh Ubuntu Linux system. Tests will not work on old 
+versions of Pester.
 
 ## References
 
