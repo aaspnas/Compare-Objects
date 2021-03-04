@@ -1,6 +1,6 @@
 <#
     .Synopsis
-    Compare-ObjectsExt compares two arbitary objects 
+    Compare-ObjectsExt compares two arbitary PowerShell objects 
 
     .Description
     Compare-ObjectsExt compares two arbitary objects and outputs 
@@ -26,7 +26,7 @@
     See the README.md file and the Test file for more examples.
 
     .Parameter Ref
-    Reference objet for comparison
+    Reference object for comparison
 
     .Parameter Diff
     Object to compare against
@@ -343,7 +343,8 @@ function reachedMaxRecursionDepth {
     reachedMaxRecursionDepth $path
     
     .NOTES
-    Splitting of the path is done based on the . char.
+    Splitting of the path is done based on the . char. There is no limit on list lengths or 
+    number of elements in a hash. 
     #>
     param (
         $locationPath
@@ -424,6 +425,116 @@ function Compare-ListThorough {
     ## Analysis done, now we need to figure out what matches
 
 }
+
+<#
+    .Synopsis
+    Dump printable content from an object
+
+    .Description
+    Dumps content from the object 
+
+    .Example
+    Dump-Object $foo
+
+    .Parameter Obj
+    Reference object to dump
+
+    .Parameter Path
+    Not for external use, only for recursion
+
+    .Notes
+    Utility functon to see what properties we see in an object.
+#>
+function Dump-Object {
+    # Public function to dump viewable content of the object
+    Param(
+    [Parameter(Position=0, 
+    Mandatory=$true)]
+    [AllowEmptyString()]
+    [Alias('Object')]
+    [AllowNull()]
+    $obj,
+
+    [Parameter(Mandatory=$false)]
+    [String[]] 
+    $path ='/'
+    )
+    if (reachedMaxRecursionDepth $path) {
+        ## Going too deep...
+        return
+    }
+    if ($path -eq '/') {
+    }
+    if ($null -eq $obj) { 
+        ## Handle null values
+        Write-Dump $path "null"
+    } else {
+        $objTypeData = $obj.GetType().Name
+        if ($null -eq $objTypeData) {
+            Write-Dump $path "Data type null"
+        } else {
+            if (isSimpleType($obj)) {
+                Write-debug ("writing actual value")
+                Write-Dump $path $obj
+                return
+            } elseif (isList($obj)) {                        
+                $i = 0;
+                foreach ($o in $obj) {
+                    $listPath = "$path[$i]"
+                    Dump-Object -obj $o -path $listPath
+                    $i++
+                } 
+            } elseif (isHash($obj)) {
+                $objkeys = $obj.Keys
+                if ($objkeys.Count -ne 0) {
+                    foreach ($k in $objkeys) {
+                        $hashpath = "$path[$k]"
+                        Dump-Object -obj ($obj[$k]) -path $hashpath
+                    }
+                }
+            } else {
+                ## Seems we have an actual object here...
+                $objmembers = ($obj | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'}) 
+                foreach ($s in ($objmembers.Name)) {
+                    [string]$objpath = "$path" + '.' + "$s"
+                    Write-debug "Object - traversal - $objpath"
+                    Dump-Object -obj ($obj.$s) -path ($objpath)
+                }
+            }
+        }
+    }
+}
+
+
+function Write-Dump {
+    <#
+    .SYNOPSIS
+    Output objects
+    
+    .DESCRIPTION
+    Private function to output objects
+    
+    .PARAMETER locationPath
+    Location in object 
+    
+    .PARAMETER value
+    Value of the object
+    
+    .EXAMPLE
+    Write-Dump $path $value
+    
+    .NOTES
+    The format is still subject to change and use has not been implemnted everywhere...
+    #>
+    param (
+        $locationPath,
+
+        $value
+    )
+    Write-Output "$locationPath = $value"
+
+}
+
 
 ### Main method
 ## Read from Env

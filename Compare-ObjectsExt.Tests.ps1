@@ -158,3 +158,25 @@ Describe "reachedMaxRecursionDepth" {
         }
     }
 }
+
+Describe "Dump-Object" {
+    Context "function for visually inspecting complex objects" {
+        It "prints normal values" {
+            Dump-Object "foo" | Should -MatchExactly "/ = foo"
+            Dump-Object 1 | Should -MatchExactly "/ = 1"
+            Dump-Object 1.334 | Should -MatchExactly "/ = 1.334"
+        }
+        It "prints lists" {
+            (Dump-Object ("foo","bar","baz","missing")).Count  | Should -Be 4
+        }
+        It "prints hashes" {
+            (Dump-Object (@{ ID = 1; Name = "foo"; Description = "bar"})).Count  | Should -Be 3
+        }
+        It "prints objects" {
+            (Dump-Object (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bar"})).Count  | Should -Be 3
+        }
+        It "prints complex objects" {
+            (Dump-Object (ConvertFrom-Json (get-content -raw ./testdata/test3.json))).Count   | Should -Be 15
+        }
+    }
+}
