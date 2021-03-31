@@ -1,14 +1,14 @@
 <#
     .Synopsis
-    Compare-ObjectsExt compares two arbitary PowerShell objects 
+    Compare-ObjectsExt compares two arbitrary PowerShell objects 
 
     .Description
-    Compare-ObjectsExt compares two arbitary objects and outputs 
+    Compare-ObjectsExt compares two arbitrary objects and outputs 
     the difference on a detailed level. Like the built in version of 
     Compare-Object, the script takes two mandatory arguments, $ref and 
     $dif. In contrast to the built in version it does not rely on 
     methods in the objects or any ToString() function to do the 
-    comparision.
+    comparison.
 
     The script is released under GPL-3.0 License. Please see the License 
     file in the distribution for details.  
@@ -52,7 +52,7 @@
 
 #>
 function Compare-ObjectsExt {
-    # Public function to compare two arbitary objects 
+    # Public function to compare two arbitrary objects 
     Param(
     [Parameter(Position=0, 
     Mandatory=$true)]
@@ -140,13 +140,13 @@ function Compare-ObjectsExt {
                     }
 
                 } elseif (isList($ref)) {
-                    ## This is a quick comparision of the lists, the beginning to 
+                    ## This is a quick comparison of the lists, the beginning to 
                     ## a more thorough analysis can be found as work in progress 
                     ## in Compare-ListThorough
                     $additionaldiffs = @()
                     if ($ref.Count -ne 0) {
                         if ($ref.Count -ne $diff.Count) {
-                            write-Diff $path ("Lenght of list differ: Ref: " + $ref.count + ",  Diff: " + $diff.count)   
+                            write-Diff $path ("Length of list differ: Ref: " + $ref.count + ",  Diff: " + $diff.count)   
                             if ($diff.Count -gt $ref.Count) {
                                 $additionaldiffs = ($diff | Where-Object { $_ -notin $ref })
  
@@ -174,43 +174,43 @@ function Compare-ObjectsExt {
                         }
                     }
                 } elseif (isHash($ref)) {
-                    $refkeys = $ref.Keys
-                    $diffkeys = $diff.Keys
-                    $additionalkeys = @()
-                    if ($refkeys.Count -ne 0) {
-                        if ($refkeys.Count -ne $diffkeys.Count) {
-                            if ($diffkeys.Count -gt $refkeys.Count) {
-                                $additionalkeys = ($diffkeys | Where-Object { $_ -notin $refkeys })
+                    $refKeys = $ref.Keys
+                    $diffKeys = $diff.Keys
+                    $additionalKeys = @()
+                    if ($refKeys.Count -ne 0) {
+                        if ($refKeys.Count -ne $diffKeys.Count) {
+                            if ($diffKeys.Count -gt $refKeys.Count) {
+                                $additionalKeys = ($diffKeys | Where-Object { $_ -notin $refKeys })
                             }
-                            write-Diff $path "Ref and Diff hashes contain diferent number of keys"
+                            write-Diff $path "Ref and Diff hashes contain different number of keys"
                         }
-                        foreach ($k in $refkeys) {
-                            $hashpath = "$path[$k]"
-                            Compare-ObjectsExt -ref ($ref[$k]) -diff ($diff[$k]) -path $hashpath
+                        foreach ($k in $refKeys) {
+                            $hashPath = "$path[$k]"
+                            Compare-ObjectsExt -ref ($ref[$k]) -diff ($diff[$k]) -path $hashPath
                         }
-                        foreach ($k in $additionalkeys) {
-                            $hashpath = "$path[$k]"
-                            Compare-ObjectsExt -ref ($ref[$k]) -diff ($diff[$k]) -path $hashpath
+                        foreach ($k in $additionalKeys) {
+                            $hashPath = "$path[$k]"
+                            Compare-ObjectsExt -ref ($ref[$k]) -diff ($diff[$k]) -path $hashPath
                         }
                     } else {
-                        if ($diffkeys.Count -ne 0) {
+                        if ($diffKeys.Count -ne 0) {
                             write-Diff $path "Ref is null and Diff hash contains keys"
                         }
                     }
                 } else {
                     ## Seems we have an actual object here...
-                    $refmembers = ($ref | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'}) 
-                    $diffmembers = ($diff | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'} | Where-Object { $_.Name -notin $refmembers.Name })
-                    if (($null -ne $diffmembers) -and ($diffmembers.Count -gt 0)) { 
-                        $allmembers = $refmembers + $diffmembers
+                    $refMembers = ($ref | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'}) 
+                    $diffMembers = ($diff | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'} | Where-Object { $_.Name -notin $refMembers.Name })
+                    if (($null -ne $diffMembers) -and ($diffMembers.Count -gt 0)) { 
+                        $allMembers = $refMembers + $diffMembers
                     } else {
-                        $allmembers = $refmembers
+                        $allMembers = $refMembers
                     }
-                    foreach ($s in ($allmembers.Name)) {
-                        [string]$objpath = "$path" + '.' + "$s"
-                        Write-debug "Object - traversal - $objpath"
+                    foreach ($s in ($allMembers.Name)) {
+                        [string]$objPath = "$path" + '.' + "$s"
+                        Write-debug "Object - traversal - $objPath"
 
-                        Compare-ObjectsExt -ref ($ref.$s) -diff ($diff.$s) -path ($objpath)
+                        Compare-ObjectsExt -ref ($ref.$s) -diff ($diff.$s) -path ($objPath)
                     } 
                 }
 
@@ -233,19 +233,19 @@ function Write-Diff {
     Output difference between objects
     
     .DESCRIPTION
-    Private function to output for differencies between objects
+    Private function to output for differences between objects
     
     .PARAMETER locationPath
-    Location in object where difference occured
+    Location in object where difference occurred
     
     .PARAMETER diffMessage
-    Message convaying what the difference was
+    Message conveying what the difference was
     
     .EXAMPLE
     Write-Diff $path $message
     
     .NOTES
-    The format is still subject to change and use has not been implemnted everywhere...
+    The format is still subject to change and use has not been implemented everywhere...
     #>
     param (
         $locationPath,
@@ -258,7 +258,7 @@ function Write-Diff {
 }
 
 function isSimpleType {
-    # Private function to deduce wherther object given as argument
+    # Private function to deduce whether object given as argument
     # is of a type we can easily compare with a simple -eq
     param (
         $testObject
@@ -274,7 +274,7 @@ function isList {
     Return true if parameter is a list
     
     .DESCRIPTION
-    Private function to deduce wherther object given as argument
+    Private function to deduce whether object given as argument
     is a list.
     
     .PARAMETER testObject
@@ -304,7 +304,7 @@ function isHash {
     Return true if parameter passed to the function is a hash table 
     
     .DESCRIPTION
-    Private function to deduce wherther object given as argument
+    Private function to deduce whether object given as argument
     is a hash table with key and value pairs.
     
     .PARAMETER testObject
@@ -333,7 +333,7 @@ function reachedMaxRecursionDepth {
     
     .DESCRIPTION
     Return true if we are going too deep according to $env:CompareObjectMaxDepth (or default 
-    setting of 30) or if same property name occure 4 or more times in the path. The function is 
+    setting of 30) or if same property name occurs 4 or more times in the path. The function is 
     intended for internal use.
     
     .PARAMETER locationPath
@@ -352,7 +352,7 @@ function reachedMaxRecursionDepth {
 
     $pathList = $locationPath.split('.')
     Write-Debug ("path is " + $pathList.count + " long")
-    if ($pathList.Count -gt $Global:maxComparisionDepth) {
+    if ($pathList.Count -gt $Global:maxComparisonDepth) {
         Write-Debug "Max depth reached for object at $locationPath"
         $Global:maxRecursionDepthExceeded++
         return $true
@@ -369,13 +369,13 @@ function reachedMaxRecursionDepth {
 function Compare-ListThorough {
     <#
     .SYNOPSIS
-    More thorough comparision of two lists, $ref and $arg, not in use
+    More thorough comparison of two lists, $ref and $arg, not in use
     
     .DESCRIPTION
     Internal function for comparing two lists, currently not used
 
     .PARAMETER ref
-    Referene list to compare against
+    Reference list to compare against
     
     .PARAMETER diff
     Difference to compare with Ref
@@ -410,15 +410,18 @@ function Compare-ListThorough {
     )
     [System.Collections.ArrayList]$result = @()
     foreach ($o in $ref) {
-        [System.Collections.ArrayList]$compresult = @()
+        [System.Collections.ArrayList]$compResult = @()
         $x = 0
         $listPath = "$path[$i]"
         foreach ($d in $diff) {
-            $dl = (Compare-ObjectsExt -ref $o -diff ($d) -path $listPath)
-            $compresult.Add($dl) | Out-Null
+            $dl = (Compare-ObjectsExt -ref ($o) -diff ($d) -path $listPath)
+            if ($dl -eq "") {
+                Write-Debug "Element $i matches $x - match found"
+            }
+            $compResult.Add($dl) | Out-Null
             $x++
         }
-        $result.Add($compresult) | Out-Null
+        $result.Add($compResult) | Out-Null
         # Write-Output $dr
         $i++
     }
@@ -443,7 +446,7 @@ function Compare-ListThorough {
     Not for external use, only for recursion
 
     .Notes
-    Utility functon to see what properties we see in an object.
+    Utility function to see what properties we see in an object.
 #>
 function Dump-Object {
     # Public function to dump viewable content of the object
@@ -485,20 +488,20 @@ function Dump-Object {
                     $i++
                 } 
             } elseif (isHash($obj)) {
-                $objkeys = $obj.Keys
-                if ($objkeys.Count -ne 0) {
-                    foreach ($k in $objkeys) {
-                        $hashpath = "$path[$k]"
-                        Dump-Object -obj ($obj[$k]) -path $hashpath
+                $objKeys = $obj.Keys
+                if ($objKeys.Count -ne 0) {
+                    foreach ($k in $objKeys) {
+                        $hashPath = "$path[$k]"
+                        Dump-Object -obj ($obj[$k]) -path $hashPath
                     }
                 }
             } else {
                 ## Seems we have an actual object here...
-                $objmembers = ($obj | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'}) 
-                foreach ($s in ($objmembers.Name)) {
-                    [string]$objpath = "$path" + '.' + "$s"
-                    Write-debug "Object - traversal - $objpath"
-                    Dump-Object -obj ($obj.$s) -path ($objpath)
+                $objMembers = ($obj | get-member | Where-Object {$_.MemberType -match 'Property' -and $_.Definition -notmatch '{set;}'}) 
+                foreach ($s in ($objMembers.Name)) {
+                    [string]$objPath = "$path" + '.' + "$s"
+                    Write-debug "Object - traversal - $objPath"
+                    Dump-Object -obj ($obj.$s) -path ($objPath)
                 }
             }
         }
@@ -524,7 +527,8 @@ function Write-Dump {
     Write-Dump $path $value
     
     .NOTES
-    The format is still subject to change and use has not been implemnted everywhere...
+    The format is still subject to change and use has not been 
+    implemented everywhere...
     #>
     param (
         $locationPath,
@@ -538,9 +542,9 @@ function Write-Dump {
 
 ### Main method
 ## Read from Env
-$Global:maxComparisionDepth = 30
+$Global:maxComparisonDepth = 30
 if ($env:CompareObjectMaxDepth){
-    $Global:maxComparisionDepth = $env:CompareObjectMaxDepth
+    $Global:maxComparisonDepth = $env:CompareObjectMaxDepth
 }
 
 ## Global variables
@@ -549,10 +553,10 @@ $Global:maxRecursionDepthExceeded = 0
 $Global:diffCount = 0
 $Global:similarCount = 0    
 
-## Hande arguments passed on script invokation
-$scriptref=$args[0]
-$scriptdiff=$args[1]
+## Handle arguments passed on script invocation
+$scriptRef=$args[0]
+$scriptDiff=$args[1]
 
-if (($scriptref) -and ($scriptdiff)) {
-    Compare-ObjectsExt $scriptref $scriptdiff
+if (($scriptRef) -and ($scriptDiff)) {
+    Compare-ObjectsExt $scriptRef $scriptDiff
 }

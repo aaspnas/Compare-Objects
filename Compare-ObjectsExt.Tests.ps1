@@ -4,7 +4,7 @@ BeforeAll {
 }
 
 Describe "Compare-ObjectsExt" {
-    Context "Comparision of simples values and null values" {
+    Context "Comparison of simples values and null values" {
         It "Returns expected output for null values" {
             Compare-ObjectsExt $null $null | Should -BeNullOrEmpty
             Compare-ObjectsExt "" "" | Should -BeNullOrEmpty
@@ -24,11 +24,11 @@ Describe "Compare-ObjectsExt" {
             Compare-ObjectsExt "foo" "fo1o" | Should -Match "<< fo1o"
         }
     }
-    Context "Comparision of lists and hashes" {
+    Context "Comparison of lists and hashes" {
         It "Returns expected output for lists" {
             Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz") | Should -BeNullOrEmpty
-            Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match "Lenght of list differ|Ref has a value, but Diff is null"
-            Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz", "fed" ) | Should -Match "Lenght of list differ|Ref is null, but Diff has a value"
+            Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar") | Should -Match "Length of list differ|Ref has a value, but Diff is null"
+            Compare-ObjectsExt ("foo", "bar", "baz") ("foo", "bar", "baz", "fed" ) | Should -Match "Length of list differ|Ref is null, but Diff has a value"
   
         }
 
@@ -40,7 +40,7 @@ Describe "Compare-ObjectsExt" {
 
         }
     }
-    Context "Comparision of objects consisting of simple types" {
+    Context "Comparison of objects consisting of simple types" {
         It "Returns expected output for composite objects" {
             Compare-ObjectsExt (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bar"}) (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bar"})  | Should -BeNullOrEmpty 
             Compare-ObjectsExt (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "baz"}) (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bar"})  | Should -Match ">> baz" 
@@ -48,7 +48,7 @@ Describe "Compare-ObjectsExt" {
             Compare-ObjectsExt (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "baz"}) (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = ("foo","bar")})   | Should -match "Ref and Diff datatype names differ"
         }
     }
-    Context "Comparision of type differenies" {
+    Context "Comparison of type differences" {
         It "Notices difference between different data types" {
             Compare-ObjectsExt "foo" 1 | Should -Match '/ - Ref and Diff datatype names differ'
             Compare-ObjectsExt 2.533 1 | Should -Match '/ - Ref and Diff datatype names differ'
@@ -56,7 +56,7 @@ Describe "Compare-ObjectsExt" {
             Compare-ObjectsExt (New-Object PSObject -Property @{ ID = 1; Name = "foo"; Description = "bar"}) 1  | Should -Match '/ - Ref and Diff datatype names differ'
         }
     }
-    Context "Comparision result for summary information" {
+    Context "Comparison result for summary information" {
         It "provides correct summary information" {
             $result1 = Compare-ObjectsExt ((get-process)[0]) ((get-process)[2]) -ProvideStats 
             ((($result1 -match '^Diffs: ' -split ' ')[1] -replace ',' ) -eq ($result1 -match '^/').count ) | Should -BeTrue
@@ -80,8 +80,8 @@ Describe "Compare-ObjectsExt" {
     }
 }
 
-Describe -Tag 'Slow' "Handles bigger objcets read from files" {
-    Context "Comparision of complex objects" {
+Describe -Tag 'Slow' "Handles bigger objects read from files" {
+    Context "Comparison of complex objects" {
         It "Compares xml objects correctly" {
             $xml1 = [xml](get-content ./testdata/test1.xml)
             $xml2 = [xml](get-content ./testdata/test2.xml)
@@ -96,13 +96,13 @@ Describe -Tag 'Slow' "Handles bigger objcets read from files" {
         }
 
         It "Compares json imported objects correctly" {
-            $jsonobj1 = ConvertFrom-Json (get-content -raw ./testdata/test3.json)
-            $jsonobj2 = ConvertFrom-Json (get-content -raw ./testdata/test4.json)
-            $result5 = Compare-ObjectsExt $jsonobj1 $jsonobj1 -ProvideStats 
+            $jsonObj1 = ConvertFrom-Json (get-content -raw ./testdata/test3.json)
+            $jsonObj2 = ConvertFrom-Json (get-content -raw ./testdata/test4.json)
+            $result5 = Compare-ObjectsExt $jsonObj1 $jsonObj1 -ProvideStats 
             ((($result5 -split ' ')[1] -replace ',' ) -eq "0" ) | Should -BeTrue
             ((($result5 -split ' ')[3] -replace ',' ) -eq "15" ) | Should -BeTrue
             ((($result5 -split ' ')[5]) -eq "0" ) | Should -BeTrue
-            $result6 = Compare-ObjectsExt $jsonobj1 $jsonobj2 -ProvideStats 
+            $result6 = Compare-ObjectsExt $jsonObj1 $jsonObj2 -ProvideStats 
             ((($result6 -match '^Diffs: ' -split ' ')[1] -replace ',' ) -eq "5" ) | Should -BeTrue
             ((($result6 -match '^Diffs: ' -split ' ')[3] -replace ',' ) -eq "10" ) | Should -BeTrue
             ((($result6 -match '^Diffs: ' -split ' ')[5]) -eq "0" ) | Should -BeTrue
@@ -125,7 +125,7 @@ Describe "isList" {
     Context "Helper functions - isList" {
         It "returns true for list objects and false for simple objects" {
             isList ("foo") | Should -BeFalse
-            islist ("a",'b',"c") | Should -BeTrue
+            isList ("a",'b',"c") | Should -BeTrue
         }
     }
 }
