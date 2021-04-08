@@ -25,7 +25,9 @@ In stead we examine recursively every node in the object, Property by property,
 Hash key value to hash key value, list element to list element against each others.
 
 For an overview of the security of the script and an analysis of the risks, see
-SECURITY.md.
+SECURITY.md. 
+
+The scripts are released under GPL 3. (SPDX-License-Identifier: GPL-3.0-or-later)
 
 ## Usage
 

@@ -49,6 +49,7 @@
     AUTHOR:  Anders Aspnäs - https://github.com/aaspnas/Compare-Objects
     VERSION: 1.0.1 - See github for commit history
     License: GPL-3 - See license file in the distribution, or github
+    SPDX-License-Identifier: GPL-3.0-or-later
 
 #>
 function Compare-ObjectsExt {

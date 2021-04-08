@@ -1,3 +1,5 @@
+# AUTHOR:  Anders Aspnäs - https://github.com/aaspnas/Compare-Objects
+# SPDX-License-Identifier: GPL-3.0-or-later
 BeforeAll {
   #  . $PSCommandPath.Replace('.Tests.ps1', '.ps1')
   . .\Compare-ObjectsExt.ps1
@@ -180,3 +182,4 @@ Describe "Dump-Object" {
         }
     }
 }
+
